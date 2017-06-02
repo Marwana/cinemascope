@@ -1,4 +1,4 @@
-o Update Movie.comments + 1 ketika submit comment
+- Update Movie.comments + 1 ketika submit comment
 o Login pakai PassportJS
 o Set Favourite
 o Update Movie.star + 1 ketika set Favourite

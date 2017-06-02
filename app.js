@@ -82,9 +82,9 @@ app.get("/topfavourite", function(request, response) {
     })
 });
 
+// Preview Movie
 app.get("/movie/:id", function(request, response) {
-    var q = movieSchemas.findOne({_id: request.params.id});
-    q.exec(function(error, moviePrev) {
+    movieSchemas.findById({_id: request.params.id}, function(error, moviePrev) {
         if (error) {
             console.log(error);
         } else {
@@ -122,17 +122,25 @@ app.post("/movie/:id", function(request, response) {
                             console.log('Total Komen : ' + tComments)
 
                             movieSchemas.findByIdAndUpdate(movie, { comments: parseInt(tComments) + 1 }, function(error, myMovie) {
-                                if(error){
+                                if(error) {
                                     console.log(error)
                                 } else {
                                     console.log('Total Komen Baru : ' + myMovie.comments)
+
+                                    var q2 = userCommentSchemas.find({'movie': request.params.id}).sort({'date': -1}).populate('user');
+                                    q2.exec(function(error, movieComms) {
+                                        if(error) {
+                                            console.log(error)
+                                        } else {
+                                            response.render("movie", {active: 0, title: "Movie Preview", moment: moment, fmovie: myMovie, comments: movieComms});
+                                        }
+                                    })
                                 }
                             })
                         }
                     })
                 }
             })
-            response.redirect("/movie/" + movie);
         }
     })
 });
