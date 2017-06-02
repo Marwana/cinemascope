@@ -28,13 +28,14 @@
                             </tr>
                         </table>
                         <label class="label-md label-primary lbl-fav">
-                            <span class="glyphicon glyphicon-star"></span class="pull-right">
+                            <span class="glyphicon glyphicon-star"></span>
                             <span class="pull-right"><%= fmovie.star %></span>
                         </label>
                         <label class="label-md label-default lbl-fav">
                             <span class="glyphicon glyphicon-comment"></span class="pull-right">
                             <span class="pull-right"><%= fmovie.comments %></span>
                         </label>
+                        <a href="#"><button class="btn btn-primary pull-right"><span class="glyphicon glyphicon-star"></span>&nbsp;Favourite</button></a>
                     </div>
                 </div>
             </div>
@@ -45,7 +46,19 @@
 
     <div class="col-md-3 col-sm-6 col-xs-6">
         <div class="comments">
-            Here where comments are
+            <table class="table table-striped table-comment">
+                <thead>
+                    <tr>
+                        <th>Komentar</th>
+                    </tr>
+                </thead>
+                <tbody class="comment-list">
+                </tbody>
+            </table>
         </div>
+        <form>
+            <textarea id="comment" name="comment" class="comment-input"></textarea>
+            <button class="btn btn-success btn-block" type="submit" name="submit">Submit</button>
+        </form>
     </div>
 <% include partials/footer.ejs %>

@@ -46,6 +46,10 @@ h1.detil {
     margin: auto;
 }
 
+h1.title {
+    color: blue;
+}
+
 .thumbnail {
     justify-content: space-between;
     flex-direction: column;
@@ -53,6 +57,7 @@ h1.detil {
     display: flex;
     height: 350px;
     background: black;
+    float: left;
 }
 
 .thumbnail img {
@@ -107,16 +112,66 @@ tr td {
 
 .description {
     color: white;
-    height: 600px;
+    height: 590px;
     border: 1px solid white;
     border-radius: 2px;
     padding: 5px;
 }
 
 .comments {
-    color: white;
-    height: 600px;
+    color: black;
+    background: white;
+    height: 490px;
+    width: 309px;
     border: 1px solid green;
     border-radius: 2px;
     padding: 5px;
+}
+
+.comment-list {
+    overflow-y: scroll;
+    height: 440px;
+    width: 300px;
+    position: absolute;
+}
+
+.table-comment {
+    width: 100%;
+}
+
+.table-striped>tbody>tr:nth-child(odd)>td,
+.table-striped>tbody>tr:nth-child(odd)>th {
+	background-color: lightseagreen;
+    width: 290px;
+    color: black;
+}
+
+.table-striped>tbody>tr:nth-child(even)>td,
+.table-striped>tbody>tr:nth-child(even)>th {
+	background-color: white;
+    width: 290px;
+    color: black;
+}
+
+.comment-input {
+    width: 309px;
+    height: 60px;
+}
+
+.table-striped>tbody>td {
+    margin: 2px;
+}
+
+.lbl-date {
+    padding: 2px;
+    text-align: center;
+    font-size: .85em;
+    width: 100%;
+}
+
+.lbl-user {
+    padding: 2px;
+    font-size: .85em;
+    width: 100%;
+    color: white;
 }

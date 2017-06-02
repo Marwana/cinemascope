@@ -12,6 +12,8 @@ var express     = require("express"),
     app.set("view engine", "ejs");
 
     // MongoDB Connection
+    var Schema = mongoose.Schema;
+
     mongoose.connect('mongodb://bekraf:pwd123456!!@ds157641.mlab.com:57641/bekraf_nodedb');
     var movieSchema = new mongoose.Schema({
         title: String,
@@ -24,11 +26,32 @@ var express     = require("express"),
         boxoffice: Boolean,
         description: String
     });
-
     var movieSchemas = mongoose.model('Movie', movieSchema);
+
+    var userSchema = new mongoose.Schema({
+        name: String,
+        join_date: Date,
+        active: Boolean
+    });
+    var userSchemas = mongoose.model('User', userSchema);
+
+    var userCommentSchema = new mongoose.Schema({
+        movie: {type: Schema.Types.ObjectId, ref: 'Movie'},
+        user: {type: Schema.Types.ObjectId, ref: 'User'},
+        date: Date,
+        comment: String
+    });
+    var userCommentSchemas = mongoose.model('Comment', userCommentSchema);
+
+    // userCommentSchemas.create({
+    //     movie: '593156f36b33413efc9b9ab0',
+    //     user: '593186d83a5e6621404f7582',
+    //     date: '2017-6-2 23:54:22',
+    //     comment: 'This movie is awesome. I cannt even blink'
+    // })
     
 app.get("/", function(request, response) {
-    response.render("index", {title: "CinemaScope"})
+    response.render("index", {active: 0, title: "CinemaScope"})
 });
 
 app.get("/newrelease", function(request, response) {
@@ -37,7 +60,7 @@ app.get("/newrelease", function(request, response) {
         if (error) {
             console.log(error);
         } else {
-            response.render("movielist", {title: "New Release", header: "New Release", moment: moment, movies: allMovies});
+            response.render("movielist", {active: 1, title: "New Release", header: "New Release", moment: moment, movies: allMovies});
         }
     })
 });
@@ -48,7 +71,7 @@ app.get("/topboxoffice", function(request, response) {
         if (error) {
             console.log(error);
         } else {
-            response.render("movielist", {title: "Top Box Office", header: "Top 20 Box Office", moment: moment, movies: allMovies});
+            response.render("movielist", {active: 2, title: "Top Box Office", header: "Top 20 Box Office", moment: moment, movies: allMovies});
         }
     })
 });
@@ -59,18 +82,18 @@ app.get("/topfavourite", function(request, response) {
         if (error) {
             console.log(error);
         } else {
-            response.render("movielist", {title: "Top Favourite", header: "Top 20 Favourite", moment: moment, movies: allMovies});
+            response.render("movielist", {active: 3, title: "Top Favourite", header: "Top 20 Favourite", moment: moment, movies: allMovies});
         }
     })
 });
 
 app.get("/movie/:id", function(request, response) {
-    var q = movieSchemas.findById(request.params.id);
+    var q = movieSchemas.findOne({_id: request.params.id}).populate('movie').populate('user');
     q.exec(function(error, moviePrev) {
         if (error) {
             console.log(error);
         } else {
-            response.render("movie", {title: "Movie Preview", moment: moment, fmovie: moviePrev});
+            response.render("movie", {active: 0, title: "Movie Preview", moment: moment, fmovie: moviePrev});
         }
     })
 });
