@@ -1,0 +1,84 @@
+.navbar-brand {
+    padding-top: 22px;
+    font-size: 25px;
+    color: green;
+}
+
+.glyphicon-facetime-video {
+    color: blue;
+    font-size: 25px;
+}
+
+.glyphicon-film {
+    color: white;
+}
+
+.glyphicon-fire {
+    color: red;
+}
+
+.glyphicon-star {
+    color: yellow;
+}
+
+.glyphicon-heart-empty {
+    color: blue;
+}
+
+body {
+    padding: 70px 20px 20px 20px;
+}
+
+.panel-heading {
+    height: 50px;
+}
+
+h1.detil {
+    /*text-align: center;*/
+    font-family: verdana;
+    font-size: 30px;
+    text-shadow: grey 0.1em 0.1em 0.1em;
+    margin: auto;
+}
+
+.thumbnail {
+    justify-content: space-between;
+    flex-direction: column;
+    height: 350px;
+    display: flex;
+    height: 350px;
+    background: black;
+}
+
+.thumbnail img {
+    height: 220px;
+}
+
+.thumbnail .info {
+    height: 100px;
+    background: blue;
+}
+
+.thumbnail .caption h4 {
+    color: whitesmoke;
+    font-size: .8em;
+    margin-left: -9px;
+    width: 293px;
+}
+
+.lbl-fav {
+    padding: 7px 5px 5px 5px;
+    font-size: 0.8em;
+    width: 60px;
+    color: white;
+    margin: auto;
+    height: 30px;
+}
+
+.btn-more {
+    height: 25px;
+    width: 70px;
+    font-size: .8em;
+    margin: auto;
+    /*padding: 2px;*/
+}
