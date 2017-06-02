@@ -27,10 +27,15 @@
 
 body {
     padding: 70px 20px 20px 20px;
+    background: black;
 }
 
 .panel-heading {
     height: 50px;
+}
+
+.panel {
+    background: black;
 }
 
 h1.detil {
@@ -51,12 +56,12 @@ h1.detil {
 }
 
 .thumbnail img {
-    height: 220px;
+    height: 210px;
 }
 
 .thumbnail .info {
-    height: 100px;
-    background: blue;
+    height: 125px;
+    /*background: blue;*/
 }
 
 .thumbnail .caption h4 {
@@ -81,4 +86,21 @@ h1.detil {
     font-size: .8em;
     margin: auto;
     /*padding: 2px;*/
+}
+
+tr td {
+    font-size: .8em;
+    color: white;
+}
+
+.table-title {
+    font-size: .8em;
+    width: 80px;
+    color: peachpuff;
+    font-style: bold;
+}
+
+.table-value {
+    font-size: .8em;
+    color: white;
 }

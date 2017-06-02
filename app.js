@@ -1,6 +1,6 @@
 var express     = require("express"),
     bodyParser  = require("body-parser"),
-    // mongoose    = require("mongoose"),
+    mongoose    = require("mongoose"),
     method      = require("method-override"),
     app         = express();
 
@@ -10,20 +10,31 @@ var express     = require("express"),
     app.use(express.static("public"));
     app.set("view engine", "ejs");
 
-    // // MongoDB Connection
-    // mongoose.connect('mongodb://bekraf:pwd123456!!@ds157641.mlab.com:57641/bekraf_nodedb');
-    // var campSchema = new mongoose.Schema({
-    //     title: String,
-    //     image: String,
-    //     description: String
-    // })
+    // MongoDB Connection
+    mongoose.connect('mongodb://bekraf:pwd123456!!@ds157641.mlab.com:57641/bekraf_nodedb');
+    var movieSchema = new mongoose.Schema({
+        title: String,
+        release_date: Date,
+        image: String,
+        star: Number,
+        comments: Number,
+        description: String
+    });
 
+    var movieSchemas = mongoose.model('Movie', movieSchema);
+    
 app.get("/", function(request, response) {
     response.render("index", {title: "CinemaScope"})
 });
 
 app.get("/newrelease", function(request, response) {
-    response.render("movielist", {title: "New Release", header: "New Release"})
+    movieSchemas.find({}, function(error, allMovies) {
+        if (error) {
+            console.log(error);
+        } else {
+            response.render("movielist", {title: "New Release", header: "New Release", movies: allMovies});
+        }
+    })
 });
 
 app.get("/topboxoffice", function(request, response) {
