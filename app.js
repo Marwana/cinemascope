@@ -44,13 +44,7 @@ var dateTime    = require('node-datetime');
     });
     var userCommentSchemas = mongoose.model('Comment', userCommentSchema);
 
-    // userCommentSchemas.create({
-    //     movie: '593156f36b33413efc9b9ab0',
-    //     user: '593186d83a5e6621404f7582',
-    //     date: '2017-6-2 23:54:22',
-    //     comment: 'This movie is awesome. I cannt even blink'
-    // })
-    
+
 app.get("/", function(request, response) {
     response.render("index", {active: 0, title: "CinemaScope"})
 });
@@ -110,8 +104,6 @@ app.post("/movie/:id", function(request, response) {
     var movie   = request.body.movieid;
     var user    = request.body.userid;
     var comment = request.body.comment;
-    var tcomm   = request.body.comments;
-    // var cdate   = dateTime.create();
 
     var newComment = {movie: movie, user: user, comment: comment};
     userCommentSchemas.create(newComment, function(error, newComm) {
@@ -122,15 +114,22 @@ app.post("/movie/:id", function(request, response) {
                 if(error) {
                     console.log(error)
                 } else {
-                    // cMovie.comment = 100;
+                    var tComm = movieSchemas.findById(movie, function(error, myMovie) {
+                        if(error) {
+                            console.log(error)
+                        } else {
+                            var tComments = myMovie.comments;
+                            console.log('Total Komen : ' + tComments)
 
-                    // cMovie.save(function (error, cMovie) {
-                    //     if(error) {
-                    //         console.log(error)
-                    //     } else {
-                    //         response.send(cMovie);
-                    //     }
-                    // })
+                            movieSchemas.findByIdAndUpdate(movie, { comments: parseInt(tComments) + 1 }, function(error, myMovie) {
+                                if(error){
+                                    console.log(error)
+                                } else {
+                                    console.log('Total Komen Baru : ' + myMovie.comments)
+                                }
+                            })
+                        }
+                    })
                 }
             })
             response.redirect("/movie/" + movie);
