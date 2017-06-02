@@ -1,3 +1,51 @@
 <% include partials/header.ejs %>
-        <img src="http://media.comicbook.com/2017/03/power-rangers-2017-vs-life-box-office-240296.jpg">
+    <div class="col-md-9 col-sm-6 col-xs-6">
+        <div class="description">
+            <div class="col-md-4 col-sm-4 col-xs-4">
+                <div class="thumbnail">
+                    <img src="<%= fmovie.image %>">
+                    <div class="info">
+                        <table>
+                            <tr>
+                                <td class="table-title">Title</td>
+                                <td class="table-value">: <%= fmovie.title %></td>
+                            </tr>
+                            <tr>
+                                <td class="table-title">Release Date&nbsp;&nbsp;</td>
+                                <td class="table-value">: <%= moment(fmovie.release_date).format( 'MMM-DD-YYYY') %></td>
+                            </tr>
+                            <tr>
+                                <td class="table-title">Category</td>
+                                <td class="table-value">: <%= fmovie.category %></td>
+                            </tr>
+                            <tr>
+                                <td class="table-title">Rating</td>
+                                <td class="table-value">: <%= fmovie.rating %></td>
+                            </tr>
+                            <tr>
+                                <td class="table-title">&nbsp;</td>
+                                <td class="table-value">&nbsp;</td>
+                            </tr>
+                        </table>
+                        <label class="label-md label-primary lbl-fav">
+                            <span class="glyphicon glyphicon-star"></span class="pull-right">
+                            <span class="pull-right"><%= fmovie.star %></span>
+                        </label>
+                        <label class="label-md label-default lbl-fav">
+                            <span class="glyphicon glyphicon-comment"></span class="pull-right">
+                            <span class="pull-right"><%= fmovie.comments %></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <%= fmovie.description %>
+        </div>
+    </div>
+
+    <div class="col-md-3 col-sm-6 col-xs-6">
+        <div class="comments">
+            Here where comments are
+        </div>
+    </div>
 <% include partials/footer.ejs %>

@@ -1,56 +1,60 @@
 <% include partials/header.ejs %>
-        <div class="col-md-12">
-            <div class="panel panel-primary">
-                <div class="panel-heading">
-                    <h1 class="detil">
-                        <strong><%= header %></strong>
-                    </h1>
-                </div>
+    <div class="col-md-12">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h1 class="detil">
+                    <strong><%= header %></strong>
+                </h1>
+            </div>
                 
-                <!--ISI PANEL -->
-                <div class="row">
-                    <% movies.forEach(function(movie) { %>
-                        <div class="col-md-3 col-sm-6 col-xs-6">
-                            <div class="thumbnail">
-                                <img src="<%= movie.image %>">
-                                
-                                <div class="info">
-                                    <table>
-                                        <tr>
-                                            <td class="table-title">Title</td>
-                                            <td class="table-value">: <%= movie.title %></td>
-                                        </tr>
-                                        <tr>
-                                            <td class="table-title">Release Date&nbsp;&nbsp;</td>
-                                            <td class="table-value">: <%= movie.release_date %></td>
-                                        </tr>
-                                        <tr>
-                                            <td class="table-title">Category</td>
-                                            <td class="table-value">: Action</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="table-title">Rating</td>
-                                            <td class="table-value">: <%= movie.rating %></td>
-                                        </tr>
-                                        <tr>
-                                            <td class="table-title">&nbsp;</td>
-                                            <td class="table-value">&nbsp;</td>
-                                        </tr>
-                                    </table>
-                                    <label class="label-md label-primary lbl-fav">
-                                        <span class="glyphicon glyphicon-star"></span class="pull-right">
-                                        <span class="pull-right"><%= movie.star %></span>
-                                    </label>
-                                    <label class="label-md label-default lbl-fav">
-                                        <span class="glyphicon glyphicon-comment"></span class="pull-right">
-                                        <span class="pull-right"><%= movie.comments %></span>
-                                    </label>
-                                    <button class="btn btn-danger pull-right" href="#">Preview</button>
-                                </div>
+            <!--ISI PANEL -->
+            <div class="row">
+                <% movies.forEach(function(movie) { %>
+                    <div class="col-md-3 col-sm-6 col-xs-6">
+                        <div class="thumbnail">
+                            <img src="<%= movie.image %>">
+                            
+                            <div class="info">
+                                <table>
+                                    <tr>
+                                        <td class="table-title">Title</td>
+                                        <td class="table-value">: <%= movie.title %></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="table-title">Release Date&nbsp;&nbsp;</td>
+                                        <td class="table-value">: <%= moment(movie.release_date).format( 'MMM-DD-YYYY') %></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="table-title">Category</td>
+                                        <td class="table-value">: <%= movie.category %></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="table-title">Rating</td>
+                                        <td class="table-value">: <%= movie.rating %></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="table-title">&nbsp;</td>
+                                        <td class="table-value">&nbsp;</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="table-title">&nbsp;</td>
+                                        <td class="table-value">&nbsp;</td>
+                                    </tr>
+                                </table>
+                                <label class="label-md label-primary lbl-fav">
+                                    <span class="glyphicon glyphicon-star"></span class="pull-right">
+                                    <span class="pull-right"><%= movie.star %></span>
+                                </label>
+                                <label class="label-md label-default lbl-fav">
+                                    <span class="glyphicon glyphicon-comment"></span class="pull-right">
+                                    <span class="pull-right"><%= movie.comments %></span>
+                                </label>
+                                <a href="/movie/<%= movie._id %>"><button class="btn btn-danger pull-right">Preview</button></a>
                             </div>
                         </div>
-                    <% }) %>
-                </div>
+                    </div>
+                <% }) %>
             </div>
         </div>
+    </div>
 <% include partials/footer.ejs %>

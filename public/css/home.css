@@ -104,3 +104,19 @@ tr td {
     font-size: .8em;
     color: white;
 }
+
+.description {
+    color: white;
+    height: 600px;
+    border: 1px solid white;
+    border-radius: 2px;
+    padding: 5px;
+}
+
+.comments {
+    color: white;
+    height: 600px;
+    border: 1px solid green;
+    border-radius: 2px;
+    padding: 5px;
+}

@@ -1,6 +1,7 @@
 var express     = require("express"),
     bodyParser  = require("body-parser"),
     mongoose    = require("mongoose"),
+    moment      = require('moment');
     method      = require("method-override"),
     app         = express();
 
@@ -16,8 +17,11 @@ var express     = require("express"),
         title: String,
         release_date: Date,
         image: String,
+        category: String,
+        rating: String,
         star: Number,
         comments: Number,
+        boxoffice: Boolean,
         description: String
     });
 
@@ -28,25 +32,47 @@ app.get("/", function(request, response) {
 });
 
 app.get("/newrelease", function(request, response) {
-    movieSchemas.find({}, function(error, allMovies) {
+    var q = movieSchemas.find().sort({'release_date': -1}).limit(20);
+    q.exec(function(error, allMovies) {
         if (error) {
             console.log(error);
         } else {
-            response.render("movielist", {title: "New Release", header: "New Release", movies: allMovies});
+            response.render("movielist", {title: "New Release", header: "New Release", moment: moment, movies: allMovies});
         }
     })
 });
 
 app.get("/topboxoffice", function(request, response) {
-    response.render("movielist", {title: "Top Box Office", header: "Top 20 Box Office"})
+    var q = movieSchemas.find({'boxoffice': true}).sort({'release_date': -1}).limit(20);
+    q.exec(function(error, allMovies) {
+        if (error) {
+            console.log(error);
+        } else {
+            response.render("movielist", {title: "Top Box Office", header: "Top 20 Box Office", moment: moment, movies: allMovies});
+        }
+    })
 });
 
 app.get("/topfavourite", function(request, response) {
-    response.render("movielist", {title: "Top Favourite", header: "Top 20 Favourite"})
+    var q = movieSchemas.find().sort({'star': -1}).limit(20);
+    q.exec(function(error, allMovies) {
+        if (error) {
+            console.log(error);
+        } else {
+            response.render("movielist", {title: "Top Favourite", header: "Top 20 Favourite", moment: moment, movies: allMovies});
+        }
+    })
 });
 
 app.get("/movie/:id", function(request, response) {
-    response.render("movielist", {title: "Movie", header: "Top 20 Favourite"})
+    var q = movieSchemas.findById(request.params.id);
+    q.exec(function(error, moviePrev) {
+        if (error) {
+            console.log(error);
+        } else {
+            response.render("movie", {title: "Movie Preview", moment: moment, fmovie: moviePrev});
+        }
+    })
 });
 
 app.listen(3000, function(error) {
