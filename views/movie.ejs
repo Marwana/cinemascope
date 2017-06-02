@@ -53,12 +53,30 @@
                     </tr>
                 </thead>
                 <tbody class="comment-list">
+                    <% comments.forEach(function(c) { %>
+                        <tr>
+                            <td>
+                                <div class="row">
+                                    <div class="col-md-7 col-sm-7 col-xs-7">
+                                        <label class="label-primary lbl-user"><%= c.user.name %></label>
+                                    </div>
+                                    <div class="col-md-5 col-sm-5 col-xs-5">
+                                        <label class="label-warning pull-right lbl-date"><%= moment(c.date).format( 'MM-DD-YYYY HH:mm:SS') %></label>
+                                    </div>
+                                </div>
+                                <%= c.comment %>
+                            </td>
+                        </tr>
+                    <% }) %>
                 </tbody>
             </table>
         </div>
-        <form>
+        <form action="/movie/<%= fmovie._id %>" class="form-group" method="POST">
             <textarea id="comment" name="comment" class="comment-input"></textarea>
-            <button class="btn btn-success btn-block" type="submit" name="submit">Submit</button>
+            <input class="btn btn-success btn-block" type="submit" name="submit">
+            <br>
+            <input id="userid" name="userid" type="hidden" value="593186d83a5e6621404f7582">
+            <input id="movieid" name="movieid" type="hidden" value="<%= fmovie._id %>">
         </form>
     </div>
 <% include partials/footer.ejs %>

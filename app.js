@@ -1,4 +1,5 @@
-var express     = require("express"),
+var dateTime    = require('node-datetime');
+    express     = require("express"),
     bodyParser  = require("body-parser"),
     mongoose    = require("mongoose"),
     moment      = require('moment');
@@ -16,30 +17,30 @@ var express     = require("express"),
 
     mongoose.connect('mongodb://bekraf:pwd123456!!@ds157641.mlab.com:57641/bekraf_nodedb');
     var movieSchema = new mongoose.Schema({
-        title: String,
-        release_date: Date,
-        image: String,
-        category: String,
-        rating: String,
-        star: Number,
-        comments: Number,
-        boxoffice: Boolean,
-        description: String
+        title:          {type: String, default: ''},
+        release_date:   Date,
+        image:          {type: String, default: ''},
+        category:       {type: String, default: ''},
+        rating:         {type: String, default: ''},
+        star:           {type: Number, default: 0},
+        comments:       {type: Number, default: 0},
+        boxoffice:      {type: Boolean, default: false},
+        description:    {type: String, default: ''}
     });
     var movieSchemas = mongoose.model('Movie', movieSchema);
 
     var userSchema = new mongoose.Schema({
-        name: String,
-        join_date: Date,
-        active: Boolean
+        name:           {type: String, default: ''},
+        join_date:      {type: Date, default: Date.now},
+        active:         {type: Boolean, default: false}
     });
     var userSchemas = mongoose.model('User', userSchema);
 
     var userCommentSchema = new mongoose.Schema({
-        movie: {type: Schema.Types.ObjectId, ref: 'Movie'},
-        user: {type: Schema.Types.ObjectId, ref: 'User'},
-        date: Date,
-        comment: String
+        movie:   {type: Schema.Types.ObjectId, ref: 'Movie'},
+        user:    {type: Schema.Types.ObjectId, ref: 'User'},
+        date:    {type: Date, default: Date.now},
+        comment: {type: String, default: ''}
     });
     var userCommentSchemas = mongoose.model('Comment', userCommentSchema);
 
@@ -88,12 +89,51 @@ app.get("/topfavourite", function(request, response) {
 });
 
 app.get("/movie/:id", function(request, response) {
-    var q = movieSchemas.findOne({_id: request.params.id}).populate('movie').populate('user');
+    var q = movieSchemas.findOne({_id: request.params.id});
     q.exec(function(error, moviePrev) {
         if (error) {
             console.log(error);
         } else {
-            response.render("movie", {active: 0, title: "Movie Preview", moment: moment, fmovie: moviePrev});
+            var q2 = userCommentSchemas.find({'movie': request.params.id}).sort({'date': -1}).populate('user');
+            q2.exec(function(error, movieComms) {
+                if(error) {
+                    console.log(error)
+                } else {
+                    response.render("movie", {active: 0, title: "Movie Preview", moment: moment, fmovie: moviePrev, comments: movieComms});
+                }
+            })
+        }
+    })
+});
+
+app.post("/movie/:id", function(request, response) {
+    var movie   = request.body.movieid;
+    var user    = request.body.userid;
+    var comment = request.body.comment;
+    var tcomm   = request.body.comments;
+    // var cdate   = dateTime.create();
+
+    var newComment = {movie: movie, user: user, comment: comment};
+    userCommentSchemas.create(newComment, function(error, newComm) {
+        if(error) {
+            console.log(error)
+        } else {
+            movieSchemas.findById(movie, function(error, cMovie) {
+                if(error) {
+                    console.log(error)
+                } else {
+                    // cMovie.comment = 100;
+
+                    // cMovie.save(function (error, cMovie) {
+                    //     if(error) {
+                    //         console.log(error)
+                    //     } else {
+                    //         response.send(cMovie);
+                    //     }
+                    // })
+                }
+            })
+            response.redirect("/movie/" + movie);
         }
     })
 });
