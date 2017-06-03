@@ -4,6 +4,10 @@
     color: green;
 }
 
+.navbar-nav {
+    padding-top: 10px;
+}
+
 .glyphicon-facetime-video {
     color: blue;
     font-size: 25px;

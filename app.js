@@ -1,56 +1,68 @@
-var dateTime        = require('node-datetime');
+var bodyParser      = require("body-parser"),
+    cookieParser    = require('cookie-parser');
+    dateTime        = require('node-datetime');
     express         = require("express"),
-    bodyParser      = require("body-parser"),
+    expressValidator= require('express-validator');
+    flash           = require('connect-flash');
+    localStrategy   = require('passport-local');
+    method          = require("method-override"),
     mongoose        = require("mongoose"),
     moment          = require('moment');
-    method          = require("method-override"),
-    app             = express();
     passport        = require('passport');
+    path            = require('path');
+    session         = require('express-session')  
 
+    app             = express();
     port            = process.env.PORT || 3000;
 
+app.use(passport.initialize())
+app.use(passport.session())
 
-    // Middleware
-    app.use(method("_method"));
-    app.use(bodyParser.urlencoded({extended: true}));
-    app.use(express.static("public"));
-    app.set("view engine", "ejs");
+// Middleware
+app.use(method("_method"));
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(express.static("public"));
+app.set("view engine", "ejs");
+app.use(cookieParser());
 
-    // MongoDB Connection
-    var configDB = require('./config/database.js');
-    var Schema = mongoose.Schema;
+app.use(session({
+    secret              : 'timewillcomeandanswerallofyourquestions',
+    saveUninitialized   : true,
+    resave              : true
+}));
 
-    mongoose.connect(configDB.url);
-    var movieSchema = new mongoose.Schema({
-        title:          {type: String, default: ''},
-        release_date:   Date,
-        image:          {type: String, default: ''},
-        category:       {type: String, default: ''},
-        rating:         {type: String, default: ''},
-        star:           {type: Number, default: 0},
-        comments:       {type: Number, default: 0},
-        boxoffice:      {type: Boolean, default: false},
-        description:    {type: String, default: ''}
-    });
-    var movieSchemas = mongoose.model('Movie', movieSchema);
+// In this example, the formParam value is going to get morphed into form body format useful for printing.
+app.use(expressValidator({
+    errorFormatter: function(param, msg, value) {
+        var namespace = param.split('.')
+        , root    = namespace.shift()
+        , formParam = root;
 
-    var userSchema = new mongoose.Schema({
-        name:           {type: String, default: ''},
-        join_date:      {type: Date, default: Date.now},
-        active:         {type: Boolean, default: false}
-    });
-    var userSchemas = mongoose.model('User', userSchema);
+        while(namespace.length) {
+        formParam += '[' + namespace.shift() + ']';
+        }
+        return {
+        param : formParam,
+        msg   : msg,
+        value : value
+        };
+    }
+}));
 
-    var userCommentSchema = new mongoose.Schema({
-        movie:   {type: Schema.Types.ObjectId, ref: 'Movie'},
-        user:    {type: Schema.Types.ObjectId, ref: 'User'},
-        date:    {type: Date, default: Date.now},
-        comment: {type: String, default: ''}
-    });
-    var userCommentSchemas = mongoose.model('Comment', userCommentSchema);
+app.use(flash());
+app.use(function(request, response, next) {
+    response.locals.success_msg     = request.flash('success_msg');
+    response.locals.error_msg       = request.flash('error_msg');
+    response.locals.error           = request.flash('error');
+    next();
+});
 
-    require('./app/routes.js')(app, passport);
+// MongoDB Connection
+var configDB = require('./config/database.js');
+mongoose.connect(configDB.url);
 
+require('./app/routes.js')(app, passport);
+require('./app/users.js');
 
 app.listen(port, function(error) {
     if(error) {

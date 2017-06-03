@@ -20,7 +20,7 @@
                 </button>
             </div>
             <div id="navbar" class="collapse navbar-collapse">
-                <ul class="nav navbar-nav nav-pills nav-left" style="padding-top: 10px;">
+                <ul class="nav navbar-nav nav-pills nav-left" >
                     <% if(active==1) { %>
                         <li class="active"><a href="/newrelease"><span class="glyphicon glyphicon-film"></span> New Release<span class="sr-only">(current)</span></a></li>
                     <% }else{ %>
@@ -37,6 +37,9 @@
                     <% }else{ %>
                         <li><a href="/topfavourite"><span class="glyphicon glyphicon-star"></span> Top 20 Favourite</a></li>
                     <% } %>
+                </ul>
+                <ul class="nav navbar-nav nav-pills nav-left pull-right">
+                    <li class="pull-right"><a href="/user/login"><span class="glyphicon glyphicon-user"></span> Login / Sign Up</a></li>
                 </ul>
             </div>
         </div>

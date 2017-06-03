@@ -1,3 +1,5 @@
+cinemaDB = require('../models/cinema.js');
+
 module.exports = function(app, passport) {
     
     app.get("/", function(request, response) {
@@ -5,7 +7,7 @@ module.exports = function(app, passport) {
     });
 
     app.get("/newrelease", function(request, response) {
-        var q = movieSchemas.find().sort({'release_date': -1}).limit(20);
+        var q = cinemaDB.movieSchemas.find({}).sort({'release_date': -1}).limit(20);
         q.exec(function(error, allMovies) {
             if (error) {
                 console.log(error);
@@ -16,7 +18,7 @@ module.exports = function(app, passport) {
     });
 
     app.get("/topboxoffice", function(request, response) {
-        var q = movieSchemas.find({'boxoffice': true}).sort({'release_date': -1}).limit(20);
+        var q = cinemaDB.movieSchemas.find({'boxoffice': true}).sort({'release_date': -1}).limit(20);
         q.exec(function(error, allMovies) {
             if (error) {
                 console.log(error);
@@ -27,7 +29,7 @@ module.exports = function(app, passport) {
     });
 
     app.get("/topfavourite", function(request, response) {
-        var q = movieSchemas.find().sort({'star': -1}).limit(20);
+        var q = cinemaDB.movieSchemas.find().sort({'star': -1}).limit(20);
         q.exec(function(error, allMovies) {
             if (error) {
                 console.log(error);
@@ -39,11 +41,11 @@ module.exports = function(app, passport) {
 
     // Preview Movie
     app.get("/movie/:id", function(request, response) {
-        movieSchemas.findById({_id: request.params.id}, function(error, moviePrev) {
+        cinemaDB.movieSchemas.findById({_id: request.params.id}, function(error, moviePrev) {
             if (error) {
                 console.log(error);
             } else {
-                var q2 = userCommentSchemas.find({'movie': request.params.id}).sort({'date': -1}).populate('user');
+                var q2 = cinemaDB.userCommentSchemas.find({'movie': request.params.id}).sort({'date': -1}).populate('user');
                 q2.exec(function(error, movieComms) {
                     if(error) {
                         console.log(error)
@@ -61,24 +63,24 @@ module.exports = function(app, passport) {
         var comment = request.body.comment;
 
         var newComment = {movie: movie, user: user, comment: comment};
-        userCommentSchemas.create(newComment, function(error, newComm) {    //INSERT COMMENT
+        cinemaDB.userCommentSchemas.create(newComment, function(error, newComm) {    //INSERT COMMENT
             if(error) {
                 console.log(error)
             } else {
-                movieSchemas.findById(movie, function(error, cMovie) {      //FIND MOVIE
+                cinemaDB.movieSchemas.findById(movie, function(error, cMovie) {      //FIND MOVIE
                     if(error) {
                         console.log(error)
                     } else {
                         var tComments = cMovie.comments;
                         console.log('Total Komen : ' + tComments)
                         
-                        movieSchemas.findByIdAndUpdate(movie, { comments: parseInt(tComments) + 1 }, function(error, myMovie) {
+                        cinemaDB.movieSchemas.findByIdAndUpdate(movie, { comments: parseInt(tComments) + 1 }, function(error, myMovie) {
                             if(error) {
                                 console.log(error)
                             } else {
                                 console.log('Total Komen Baru : ' + myMovie.comments)
 
-                                var q2 = userCommentSchemas.find({'movie': request.params.id}).sort({'date': -1}).populate('user');
+                                var q2 = cinemaDB.userCommentSchemas.find({'movie': request.params.id}).sort({'date': -1}).populate('user');
                                 q2.exec(function(error, movieComms) {
                                     if(error) {
                                         console.log(error)
@@ -93,35 +95,7 @@ module.exports = function(app, passport) {
             }
         })
     })
-
-    // =====================================
-    // SIGNUP ==============================
-    // =====================================
-    // show the signup form
-    app.get('/signup', function(request, response) {
-
-        // render the page and pass in any flash data if it exists
-        response.render('signup.ejs', { message: request.flash('signupMessage') });
-    });
-
-    // =====================================
-    // LOGIN ===============================
-    // =====================================
-    // show the login form
-    app.get('/login', function(request, response) {
-
-        // render the page and pass in any flash data if it exists
-        response.render('login.ejs', { message: request.flash('loginMessage') }); 
-    });
-
-    // =====================================
-    // LOGOUT ==============================
-    // =====================================
-    app.get('/logout', function(request, response) {
-        request.logout();
-        response.redirect('/');
-    });
-};
+}
 
 // route middleware to make sure a user is logged in
 function isLoggedIn(req, res, next) {
