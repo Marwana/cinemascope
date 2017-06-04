@@ -1,5 +1,5 @@
-var model   = require('../models/cinema'),
-    moment  = require('moment');
+var model   = require("../models/cinema"),
+    moment  = require("moment");
 
 module.exports = function(app, passport) {
     app.get("/", function(request, response) {
@@ -7,7 +7,7 @@ module.exports = function(app, passport) {
     });
 
     app.get("/newrelease", function(request, response) {
-        var q = model.movieSchemas.find({}).sort({'release_date': -1}).limit(20);
+        var q = model.movieSchemas.find({}).sort({"release_date": -1}).limit(20);
         q.exec(function(error, allMovies) {
             if (error) {
                 console.log(error);
@@ -18,7 +18,7 @@ module.exports = function(app, passport) {
     });
 
     app.get("/topboxoffice", function(request, response) {
-        var q = model.movieSchemas.find({'boxoffice': true}).sort({'release_date': -1}).limit(20);
+        var q = model.movieSchemas.find({"boxoffice": true}).sort({"release_date": -1}).limit(20);
         q.exec(function(error, allMovies) {
             if (error) {
                 console.log(error);
@@ -29,7 +29,7 @@ module.exports = function(app, passport) {
     });
 
     app.get("/topfavourite", function(request, response) {
-        var q = model.movieSchemas.find().sort({'star': -1}).limit(20);
+        var q = model.movieSchemas.find().sort({"star": -1}).limit(20);
         q.exec(function(error, allMovies) {
             if (error) {
                 console.log(error);
@@ -45,7 +45,7 @@ module.exports = function(app, passport) {
             if (error) {
                 console.log(error);
             } else {
-                var q2 = model.userCommentSchemas.find({'movie': request.params.id}).sort({'date': -1}).populate('user');
+                var q2 = model.userCommentSchemas.find({"movie": request.params.id}).sort({"date": -1}).populate("user");
                 q2.exec(function(error, movieComms) {
                     if(error) {
                         console.log(error)
@@ -72,7 +72,7 @@ module.exports = function(app, passport) {
                         console.log(error)
                     } else {
                         var tComments = cMovie.comments;                           // GET TOTAL COMMENTS
-                        console.log('Total Komen : ' + tComments)
+                        console.log("Total Komen : " + tComments)
                         
                         model.movieSchemas.findByIdAndUpdate(movie, { comments: parseInt(tComments) + 1 }, function(error, myMovie) {                                                 // UPDATE TOTAL COMMENTS
                             if(error) {
@@ -82,14 +82,15 @@ module.exports = function(app, passport) {
                                     if(error) {
                                         console.log(error)
                                     } else {
-                                        console.log('Total Komen Baru : ' + myMovie.comments)
+                                        console.log("Total Komen Baru : " + myMovie.comments)
 
-                                        var q2 = model.userCommentSchemas.find({'movie': request.params.id}).sort({'date': -1}).populate('user');
+                                        var q2 = model.userCommentSchemas.find({"movie": request.params.id}).sort({"date": -1}).populate("user");
                                         q2.exec(function(error, movieComms) {             // GET COMMENTS LIST AND POPULATE USER NAME
                                             if(error) {
                                                 console.log(error)
                                             } else {
                                                 response.render("movie", {active: 0, title: "Movie Preview", loggedIn: isLoggedIn, moment: moment, fmovie: myMovie, comments: movieComms});
+                                                response.end();
                                             }
                                         })
                                     }
@@ -109,6 +110,6 @@ function isLoggedIn(request, response, next) {
     if (request.isAuthenticated())
         return next();
 
-    // if they aren't redirect them to the home page
-    response.redirect('/member/login');
+    // if they aren"t redirect them to the home page
+    response.redirect("/member/login");
 }

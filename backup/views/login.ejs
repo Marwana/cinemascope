@@ -1,6 +1,6 @@
 <% include partials/header.ejs %>
     <div class="login-form">
-        <form action="/member/login" id="form-input" class="form-group" method="POST">
+        <form action="/member/login" class="form-group" method="POST">
             <div class="input-group input-group-md login-input">
                 <span class="input-group-addon">
                     <span class="glyphicon glyphicon-user"></span>
@@ -15,7 +15,7 @@
                 <input type="password" class="form-control" name="password" placeholder="Password">
             </div>
             
-            <button class="btn btn-success btn-block" data-loading-text="memvalidasi Akses..." type="submit" name="submit">Login</button>
+            <button class="btn btn-success btn-block" type="submit" name="submit">Login</button>
         </form>
         <a href="/member/register"><button class="btn btn-danger btn-block" name="register">Or Sign Up for FREE Membership</button></a>
     </div>
