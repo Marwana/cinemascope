@@ -3,7 +3,9 @@
         <div class="panel panel-primary">
             <div class="panel-heading">
                 <h1 class="detil">
-                    <strong><%= header %></strong>
+                    <% if(typeof header != 'undefined'){ %>
+                        <strong><%= header %></strong>
+                    <% } %>
                 </h1>
             </div>
                 

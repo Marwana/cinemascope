@@ -1,11 +1,27 @@
+.navbar {
+    background: black;
+}
+
 .navbar-brand {
     padding-top: 22px;
     font-size: 25px;
-    color: green;
+    color: red;
+    font-family: 'Bungee Inline', cursive;
 }
 
-.navbar-nav {
-    padding-top: 10px;
+.navbar-brand:hover {
+    color: red;
+    text-shadow: white 0em 0em 0.3em;
+}
+
+.nav-pills {
+    padding-top: 7px;
+    font-size: 1.2em;
+    font-family: 'Berkshire Swash', cursive;
+}
+
+.nav-pills ul>li:hover {
+    background: lawngreen;
 }
 
 .glyphicon-facetime-video {
@@ -44,10 +60,12 @@ body {
 
 h1.detil {
     /*text-align: center;*/
-    font-family: verdana;
+    font-family: 'Codystar', cursive;
     font-size: 30px;
     text-shadow: grey 0.1em 0.1em 0.1em;
+    color: yellow;
     margin: auto;
+    font-style: bold;
 }
 
 h1.title {
@@ -62,6 +80,7 @@ h1.title {
     height: 350px;
     background: black;
     float: left;
+    margin: 5px;
 }
 
 .thumbnail img {
@@ -178,4 +197,22 @@ tr td {
     font-size: .85em;
     width: 100%;
     color: white;
+}
+
+.login-input {
+    margin-bottom: 5px;
+}
+
+.login-form {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    /* bring your own prefixes */
+    transform: translate(-50%, -50%);
+}
+
+.form-login {
+    background: url("/images/ticket_retro.png") no-repeat 0 0;
+    width: 500px;
+    height: 200px;
 }

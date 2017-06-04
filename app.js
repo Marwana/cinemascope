@@ -1,19 +1,18 @@
-var bodyParser      = require("body-parser"),
-    cookieParser    = require('cookie-parser');
-    dateTime        = require('node-datetime');
-    express         = require("express"),
-    expressValidator= require('express-validator');
-    flash           = require('connect-flash');
-    localStrategy   = require('passport-local');
-    method          = require("method-override"),
-    mongoose        = require("mongoose"),
-    moment          = require('moment');
-    passport        = require('passport');
-    path            = require('path');
-    session         = require('express-session')  
+var bodyParser       = require("body-parser"),
+    cookieParser     = require('cookie-parser'),
+    dateTime         = require('node-datetime'),
+    express          = require("express"),
+    expressValidator = require('express-validator'),
+    flash            = require('connect-flash'),
+    localStrategy    = require('passport-local'),
+    method           = require("method-override"),
+    mongoose         = require("mongoose"),
+    passport         = require('passport'),
+    path             = require('path'),
+    session          = require('express-session'),  
 
-    app             = express();
-    port            = process.env.PORT || 3000;
+    app              = express(),
+    port             = process.env.PORT || 3000;
 
 app.use(passport.initialize())
 app.use(passport.session())
@@ -26,7 +25,7 @@ app.set("view engine", "ejs");
 app.use(cookieParser());
 
 app.use(session({
-    secret              : 'timewillcomeandanswerallofyourquestions',
+    secret              : 'timewillcomeandanswersallofyourquestions',
     saveUninitialized   : true,
     resave              : true
 }));
@@ -34,9 +33,9 @@ app.use(session({
 // In this example, the formParam value is going to get morphed into form body format useful for printing.
 app.use(expressValidator({
     errorFormatter: function(param, msg, value) {
-        var namespace = param.split('.')
-        , root    = namespace.shift()
-        , formParam = root;
+        var namespace   = param.split('.')
+        , root          = namespace.shift()
+        , formParam     = root;
 
         while(namespace.length) {
         formParam += '[' + namespace.shift() + ']';
@@ -62,7 +61,7 @@ var configDB = require('./config/database.js');
 mongoose.connect(configDB.url);
 
 require('./app/routes.js')(app, passport);
-require('./app/users.js');
+require('./app/users.js')(app);
 
 app.listen(port, function(error) {
     if(error) {
