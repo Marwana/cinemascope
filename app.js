@@ -3,7 +3,7 @@ var bodyParser       = require("body-parser"),
     dateTime         = require("node-datetime"),
     express          = require("express"),
     expressValidator = require("express-validator"),
-    flash            = require("connect-flash"),
+    flash            = require("express-flash"),
     localStrategy    = require("passport-local"),
     method           = require("method-override"),
     moment           = require("moment"),
@@ -19,17 +19,26 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Middleware
+app.set("view engine", "ejs");
 app.use(method("_method"));
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static("public"));
-app.set("view engine", "ejs");
-app.use(cookieParser());
-
+app.use(cookieParser('keyboard cat'));
 app.use(session({
     secret              : "timewillcomeandanswersallofyourquestions",
     saveUninitialized   : true,
     resave              : true
 }));
+// cookie              : { maxAge: 60000 }
+
+app.use(flash());
+app.use(function(request, response, next) {
+    response.locals.success_msg     = request.flash("success_msg");
+    response.locals.error_msg       = request.flash("error_msg");
+    response.locals.error           = request.flash("error");
+    response.locals.user            = request.user || null;
+    next();
+});
 
 // In this example, the formParam value is going to get morphed into form body format useful for printing.
 app.use(expressValidator({
@@ -48,14 +57,6 @@ app.use(expressValidator({
         };
     }
 }));
-
-app.use(flash());
-app.use(function(request, response, next) {
-    response.locals.success_msg     = request.flash("success_msg");
-    response.locals.error_msg       = request.flash("error_msg");
-    response.locals.error           = request.flash("error");
-    next();
-});
 
 // MongoDB Connection=======================================================
 var configDB = require("./config/database.js");
@@ -102,7 +103,7 @@ var userSchemas         = mongoose.model("User", userSchema);
 
 // ROUTING ======================================================================
 app.get("/", function(request, response) {
-    response.render("index", {active: 0, title: "CinemaScope", loggedIn: isLoggedIn})
+    response.render("index", {active: 0, title: "CinemaScope", session: request.session})
 });
 
 app.get("/newrelease", function(request, response) {
@@ -111,7 +112,7 @@ app.get("/newrelease", function(request, response) {
         if (error) {
             console.log(error);
         } else {
-            response.render("movielist", {active: 1, title: "New Release", loggedIn: isLoggedIn, header: "New Release", moment: moment, movies: allMovies});
+            response.render("movielist", {active: 1, title: "New Release", header: "New Release", moment: moment, movies: allMovies, session: request.session});
         }
     })
 });
@@ -122,7 +123,7 @@ app.get("/topboxoffice", function(request, response) {
         if (error) {
             console.log(error);
         } else {
-            response.render("movielist", {active: 2, title: "Top Box Office", header: "Top 20 Box Office", loggedIn: isLoggedIn, moment: moment, movies: allMovies});
+            response.render("movielist", {active: 2, title: "Top Box Office", header: "Top 20 Box Office", moment: moment, movies: allMovies, session: request.session});
         }
     })
 });
@@ -133,7 +134,7 @@ app.get("/topfavourite", function(request, response) {
         if (error) {
             console.log(error);
         } else {
-            response.render("movielist", {active: 3, title: "Top Favourite", header: "Top 20 Favourite", loggedIn: isLoggedIn, moment: moment, movies: allMovies});
+            response.render("movielist", {active: 3, title: "Top Favourite", header: "Top 20 Favourite", moment: moment, movies: allMovies, session: request.session});
         }
     })
 });
@@ -149,7 +150,7 @@ app.get("/movie/:id", function(request, response) {
                 if(error) {
                     console.log(error)
                 } else {
-                    response.render("movie", {active: 0, title: "Movie Preview", moment: moment, loggedIn: isLoggedIn, fmovie: moviePrev, comments: movieComms, loggedIn: isLoggedIn});
+                    response.render("movie", {active: 0, title: "Movie Preview", moment: moment, fmovie: moviePrev, comments: movieComms, session: request.session});
                 }
             })
         }
@@ -188,7 +189,7 @@ app.post("/movie/:id", isLoggedIn, function(request, response) {
                                         if(error) {
                                             console.log(error)
                                         } else {
-                                            response.render("movie", {active: 0, title: "Movie Preview", loggedIn: isLoggedIn, moment: moment, fmovie: myMovie, comments: movieComms});
+                                            response.render("movie", {active: 0, title: "Movie Preview", moment: moment, fmovie: myMovie, comments: movieComms, session: request.session});
                                             response.end();
                                         }
                                     })
@@ -204,35 +205,55 @@ app.post("/movie/:id", isLoggedIn, function(request, response) {
 
 // SIGNUP ==============================
 app.get("/member/register", function(request, response) {
-    response.render("register", {active: 4, title: "Registration", loggedIn: isLoggedIn});
+    response.render("register", {active: 4, title: "Registration", session: request.session});
 });
 
 // LOGIN ===============================
 app.get("/member/login", function(request, response) {
-    response.render("login", {active: 4, title: "Member Login", loggedIn: isLoggedIn}); 
+    response.render("login", {active: 4, title: "Member Login", session: request.session}); 
 });
 
-// passport.use(new LocalStrategy(
-//     function(username, password, done) {
-//         User.findOne({ username: username }, function (error, user) {
-//         if (error) { return done(error); }
-//         if (!user) {
-//             return done(null, false, { message: "Incorrect username." });
-//         }
-//         if (!user.validPassword(password)) {
-//             return done(null, false, { message: "Incorrect password." });
-//         }
-//         return done(null, user);
-//         });
-//     }
-//     ));
+passport.use(new localStrategy(
+    function(username, password, done) {
+        userSchemas.findOne({ username: username }, function (error, user) {
+            if (error) { return done(error); }
+            if (!user) {
+                return done(null, false, { message: "Incorrect username." });
+            }
+            bcrypt.compare(password, user.password, function(error, isMatch) {
+                if(error) {
+                    console.log(error);
+                } else {
+                    if(isMatch) {
+                        return done(null, user);
+                    } else {
+                        return done(null, false, { message: "Incorrect password." });
+                    }
+                }
+            })
+        });
+    }
+));
 
-app.post("/member/login", function(request, response) {
-    passport.authenticate("local", {successRedirect: "/", failureRedirect: "/member/login", failureFlash: true}), 
+passport.serializeUser(function(user, done) {
+    console.log("Serialize 1 : " + user.id);
+    console.log("Serialize 2 : " + user.firstname);
+    done(null, user.id, user.firstname);
+});
+
+passport.deserializeUser(function(id, done) {
+    userSchemas.findById(id, function(error, user) {
+        console.log("DeSerialize : " + user.id + " > " + user.username);
+        done(error, user);
+    });
+});
+
+app.post("/member/login",
+    passport.authenticate("local", {successRedirect: "/newrelease", failureRedirect: "/member/login", failureFlash: true}), 
         function(request, response) {
             response.redirect("/newrelease");
         }
-});
+);
 
 app.post("/member/register", function(request, response) {
     var first_name  = request.body.firstname,
@@ -251,18 +272,17 @@ app.post("/member/register", function(request, response) {
 
     var errors = request.validationErrors();
     if(errors) {
-        console.log(errors);
-        response.render("register", {active: 4, title: "Registration", loggedIn: isLoggedIn, messages: errors});
+        request.flash("error_msg", errors);
+        response.redirect("/member/register", {active: 4, title: "Registration", session: request.session});
     } else {
         // CHECKING DATA
         console.log("Checking Data");
         checkExisting(email, user_name, function(error, breakProcess) {
             if(error) {
-                console.log(error)
+                console.log(error);
             } else {
                 if (breakProcess=="exist") {
-                    console.log("*******User Name or Email already used !");
-                    request.flash("info", "User Name or Email already used !");
+                    request.flash("error_msg", "User Name or Email already used !");
                     response.redirect("/member/register");
                 } else {
                     console.log("SUBMITTING DATA");
@@ -278,8 +298,7 @@ app.post("/member/register", function(request, response) {
                                 password    : pwd
                             });
 
-                            request.flash("success", "You have been REGISTERED...");
-                            console.log("*******You have been REGISTERED...");
+                            request.flash("success_msg", "You have been REGISTERED...");
                             response.redirect("/member/login");
                         }
                     });
@@ -291,7 +310,9 @@ app.post("/member/register", function(request, response) {
 
 // LOGOUT ==============================
 app.get("/member/logout", function(request, response) {
-    request.logout();
+    request.flash("success_msg", "You are LOGGED OUT...");
+    request.logOut();
+    request.session.destroy();
     response.redirect("/");
 });
 
@@ -299,15 +320,13 @@ app.get("/member/logout", function(request, response) {
 var checkExisting = function(email, username, callback) {
     console.log("Email : " + email);
     console.log("Username : " + username);
-    var q = userSchemas.find({"email": email}, {"username": username}).sort({"email": 1}).limit(1);
+    var q = userSchemas.find({"email": email}, {"username": username});
     q.exec(function(error, member) {
         if(error) {
             console.log(error);
             callback(error, "");
         } else {
-            console.log("Member Found : " + member[0]);
-            console.log("Type : " + member.length);
-            if(member.length > 0) {
+            if(!member) {
                 console.log("Existing username : " + member[0].username);
                 callback(null, "exist");
             } else {

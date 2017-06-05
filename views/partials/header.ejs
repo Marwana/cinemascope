@@ -49,7 +49,7 @@
                     <% } %>
                 </ul>
                 
-                <% if(loggedIn) { %>
+                <% if(typeof session.passport == "undefined") { %>
                     <ul class="nav navbar-nav nav-pills nav-left pull-right">
                         <% if(active==4) { %>
                             <li class="pull-right active"><a href="/member/login"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;Login / Sign Up</a></li>
@@ -60,7 +60,7 @@
                 <% } else { %>
                     <ul class="nav navbar-nav nav-pills nav-left pull-right">
                         <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;Welcome : USER <span class="caret"></span></a>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;Welcome<span class="caret"></span></a>
                             <ul class="dropdown-menu dropdown-menu-right">
                                 <li><a href="#"><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Ganti Password</a></li>
                                 <li role="separator" class="divider"></li>
@@ -74,9 +74,4 @@
     </nav>
 
     <div class="row row-body">
-        <% if (typeof errors != "undefined") { %>
-            <p style="color: red;">Error</p>
-            <% errors.forEach(function(err) { %>
-                <p style="color: red;"><% err.message %></p>
-            <% }) %>
-        <% } %>
+        <!--<p style="color: white;">Session : <%= JSON.stringify(session) %></p>-->

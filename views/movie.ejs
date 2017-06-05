@@ -73,7 +73,11 @@
         </div>
         <form action="/movie/<%= fmovie._id %>" class="form-group" method="POST">
             <textarea id="comment" name="comment" class="comment-input"></textarea>
-            <input class="btn btn-success btn-block" type="submit" name="submit">
+            <% if(typeof session.passport == "undefined") { %>
+                <button href="/member/login/next?/movie/<%= fmovie._id %>" class="btn btn-warning btn-block" name="login">Log In to Comment</button>
+            <% } else { %>
+                <input class="btn btn-success btn-block" type="submit" name="submit">
+            <% } %>
             <br>
             <input id="userid" name="userid" type="hidden" value="593186d83a5e6621404f7582">
             <input id="movieid" name="movieid" type="hidden" value="<%= fmovie._id %>">
