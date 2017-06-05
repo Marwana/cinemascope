@@ -79,7 +79,11 @@
                 <input class="btn btn-success btn-block" type="submit" name="submit">
             <% } %>
             <br>
-            <input id="userid" name="userid" type="hidden" value="593186d83a5e6621404f7582">
+            <% if(typeof session.passport == "undefined") { %>
+                <input id="userid" name="userid" type="hidden" value="abcdefg">
+            <% } else { %>
+                <input id="userid" name="userid" type="hidden" value="<%= session.passport.user %>">
+            <% } %>
             <input id="movieid" name="movieid" type="hidden" value="<%= fmovie._id %>">
         </form>
     </div>
