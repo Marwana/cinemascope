@@ -3,14 +3,14 @@ var bodyParser       = require("body-parser"),
     dateTime         = require("node-datetime"),
     express          = require("express"),
     expressValidator = require("express-validator"),
-    flash            = require("express-flash"),
+    flash            = require("flash"),
     localStrategy    = require("passport-local"),
     method           = require("method-override"),
     moment           = require("moment"),
     mongoose         = require("mongoose"),
     passport         = require("passport"),
     path             = require("path"),
-    session          = require("express-session"),  
+    session          = require("express-session"),
 
     app              = express(),
     port             = process.env.PORT || 3000;
@@ -33,9 +33,9 @@ app.use(session({
 
 app.use(flash());
 app.use(function(request, response, next) {
-    response.locals.success_msg     = request.flash("success_msg");
-    response.locals.error_msg       = request.flash("error_msg");
-    response.locals.error           = request.flash("error");
+    // response.locals.success_msg     = request.flash("success_msg");
+    // response.locals.error_msg       = request.flash("error_msg");
+    // response.locals.error           = request.flash("error");
     response.locals.user            = request.user || null;
     next();
 });
@@ -273,7 +273,7 @@ app.post("/member/register", function(request, response) {
     var errors = request.validationErrors();
     if(errors) {
         request.flash("error_msg", errors);
-        response.redirect("/member/register", {active: 4, title: "Registration", session: request.session});
+        response.redirect("/member/register");
     } else {
         // CHECKING DATA
         console.log("Checking Data");
@@ -311,9 +311,9 @@ app.post("/member/register", function(request, response) {
 // LOGOUT ==============================
 app.get("/member/logout", function(request, response) {
     request.flash("success_msg", "You are LOGGED OUT...");
+    response.redirect("/");
     request.logOut();
     request.session.destroy();
-    response.redirect("/");
 });
 
 

@@ -74,4 +74,31 @@
     </nav>
 
     <div class="row row-body">
-        <!--<p style="color: white;">Session : <%= JSON.stringify(session) %></p>-->
+        <!--<p style="color: white;">Session : <%= JSON.stringify(session) %></p>
+        <p style="color: white;">Session : <%= session.flash.length %></p>-->
+        
+        <% session.flash.forEach(function(msgs) { %>
+            <!--<p style="color: white;">Tipe Session : <%= msgs['type'] %></p>-->
+            <% if(Array.isArray(msgs.message)) { %>
+                <!--<p style="color: red;">Panjang Message : <%= msgs.message.length %></p>-->
+                <% msgs.message.forEach(function(msg) { %>
+                    <% if(msgs["type"].indexOf("error") >= 0 ) { %>
+                        <div class="alert alert-danger fade in col-md-3" role="alert">
+                    <% } else { %>
+                        <div class="alert alert-info fade in col-md-3" role="alert">
+                    <% } %>
+                            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                            <strong><%= msg.msg %></strong>
+                        </div>
+                <% }) %>
+            <% } else { %>
+                <% if(msgs["type"].indexOf("error") >= 0 ) { %>
+                    <div class="alert alert-danger fade in" role="alert">
+                <% } else { %>
+                    <div class="alert alert-info fade in" role="alert">
+                <% } %>
+                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                        <strong><%= msgs.message %></strong>
+                    </div>
+            <% } %>
+        <% }) %>
