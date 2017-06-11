@@ -251,7 +251,8 @@ passport.deserializeUser(function(id, done) {
 app.post("/member/login",
     passport.authenticate("local", {successRedirect: "/newrelease", failureRedirect: "/member/login", failureFlash: true}), 
         function(request, response) {
-            response.redirect("/newrelease");
+            console.log(request.next())
+            // response.redirect("/newrelease");
         }
 );
 

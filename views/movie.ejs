@@ -73,18 +73,20 @@
         </div>
         <form action="/movie/<%= fmovie._id %>" class="form-group" method="POST">
             <textarea id="comment" name="comment" class="comment-input"></textarea>
-            <% if(typeof session.passport == "undefined") { %>
-                <button href="/member/login/next?/movie/<%= fmovie._id %>" class="btn btn-warning btn-block" name="login">Log In to Comment</button>
+            <% if(typeof session.passport == "undefined") { %>                
             <% } else { %>
                 <input class="btn btn-success btn-block" type="submit" name="submit">
             <% } %>
             <br>
             <% if(typeof session.passport == "undefined") { %>
-                <input id="userid" name="userid" type="hidden" value="abcdefg">
+                <input id="userid" name="userid" type="hidden">
             <% } else { %>
                 <input id="userid" name="userid" type="hidden" value="<%= session.passport.user %>">
             <% } %>
             <input id="movieid" name="movieid" type="hidden" value="<%= fmovie._id %>">
         </form>
+        <% if(typeof session.passport == "undefined") { %>
+            <a href="/member/login/?next=movie/<%= fmovie._id %>"><button class="btn btn-warning btn-block" name="login">Log In to Comment</button></a>
+        <% } %>
     </div>
 <% include partials/footer.ejs %>
