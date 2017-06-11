@@ -157,7 +157,7 @@ app.get("/movie/:id", function(request, response) {
     })
 });
 
-app.post("/movie/:id", isLoggedIn, function(request, response) {
+app.post("/movie/:id", function(request, response) {
     var movie   = request.body.movieid;
     var user    = request.body.userid;
     var comment = request.body.comment;
@@ -346,14 +346,14 @@ var hashPassword = function(password, callback) {
 };
 
 // route middleware to make sure a user is logged in
-function isLoggedIn(request, response, next) {
-    // if user is authenticated in the session, carry on 
-    if (request.isAuthenticated())
-        return next();
+// function isLoggedIn(request, response, next) {
+//     // if user is authenticated in the session, carry on 
+//     if (request.isAuthenticated())
+//         return next();
 
-    // if they aren"t redirect them to the home page
-    response.redirect("/member/login");
-};
+//     // if they aren"t redirect them to the home page
+//     response.redirect("/member/login");
+// };
 
 
 app.listen(port, function(error) {
